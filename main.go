@@ -12,7 +12,7 @@ import (
 
 func main() {
     server := &http.Server{
-        Addr:   ":3128",
+        Addr:   ":502",
     }
 
     errs := make(chan error, 2)
@@ -24,7 +24,7 @@ func main() {
         }
         errs <-nil
     }()
-    log.Printf("Started HTTP server on \n")
+    log.Printf("Started Modbus service on :502\n")
 
     go func() {
         stop := make(chan os.Signal, 1)
@@ -44,7 +44,7 @@ func main() {
     }()
 
     if err := <-errs; err != nil {
-        log.Fatalf("Failed to shut server down: %v", err)
+        log.Fatal(err)
     }
-    log.Println("Stopped HTTP server")
+    log.Println("Stopped Modbus service")
 }
