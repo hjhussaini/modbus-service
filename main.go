@@ -8,6 +8,7 @@ import (
     "os/signal"
     "syscall"
     "time"
+    "modbus-service/repository"
 
     "github.com/spf13/viper"
 )
@@ -17,6 +18,8 @@ func main() {
     if err := viper.ReadInConfig(); err != nil {
         log.Fatalf("Failed to read config file: %v", err)
     }
+
+    repository.New()
 
     address := viper.GetString("server.address")
     server := &http.Server{
