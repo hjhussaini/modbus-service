@@ -1,6 +1,8 @@
 package modbus
 
 import (
+    "time"
+
     "github.com/goburrow/modbus"
 )
 
@@ -35,6 +37,21 @@ func (adapter *ModbusAdapter) rtuConnect(address string) error {
     adapter.client = modbus.NewClient(adapter.rtuHandler)
 
     return nil
+}
+
+func (adapter *ModbusAdapter) tcpConnect(address string) error {
+    adapter.tcpHandler = modbus.NewTCPClientHandler(address)
+    adapter.tcpHandler.Timeout = 10 * time.Second
+    adapter.tcpHandler.SlaveId = 0xFF
+
+    if err := adapter.tcpHandler.Connect(); err != nil {
+        return err
+    }
+
+    adapter.client = modbus.NewClient(adapter.tcpHandler)
+
+    return nil
+    
 }
 
 func (adapter *ModbusAdapter) Close() error {
