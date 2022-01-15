@@ -1,0 +1,6 @@
+server:
+    address: 127.0.0.1:502
+modbus:
+    protocol: rtu
+    address: /dev/ttyS0
+

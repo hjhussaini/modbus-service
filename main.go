@@ -8,11 +8,19 @@ import (
     "os/signal"
     "syscall"
     "time"
+
+    "github.com/spf13/viper"
 )
 
 func main() {
+    viper.SetConfigFile("/etc/modbus.service.yaml")
+    if err := viper.ReadInConfig(); err != nil {
+        log.Fatalf("Failed to read config file: %v", err)
+    }
+
+    address := viper.GetString("server.address")
     server := &http.Server{
-        Addr:   ":502",
+        Addr:   address,
     }
 
     errs := make(chan error, 2)
