@@ -63,5 +63,13 @@ func (adapter *ModbusAdapter) tcpConnect(address string) error {
 }
 
 func (adapter *ModbusAdapter) Close() error {
+    if adapter.rtuHandler != nil {
+        return adapter.rtuHandler.Close()
+    }
+
+    if adapter.tcpHandler != nil {
+        return adapter.tcpHandler.Close()
+    }
+
     return nil
 }
