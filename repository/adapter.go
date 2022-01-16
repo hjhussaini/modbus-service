@@ -1,5 +1,9 @@
 package repository
 
+import (
+    "modbus-service/repository/modbus"
+)
+
 type Adapter interface {
     Modbus() modbus.Adapter
 }

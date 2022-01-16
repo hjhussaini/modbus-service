@@ -1,6 +1,7 @@
 package modbus
 
 import (
+    "errors"
     "time"
 
     "github.com/goburrow/modbus"
@@ -12,14 +13,21 @@ type Adapter interface {
 }
 
 type ModbusAdapter struct {
-    rtuHandler  modbus.RTUClientHandler
-    tcpHandler  modbus.TCPClientHandler
+    rtuHandler  *modbus.RTUClientHandler
+    tcpHandler  *modbus.TCPClientHandler
     client      modbus.Client
 }
 
-func (adapter *Modpackage) Connect(protocol string, address string) error {
+func (adapter *ModbusAdapter) Connect(protocol string, address string) error {
+    if protocol == "rtu" {
+        return adapter.rtuConnect(address)
+    }
 
-    return nil
+    if protocol == "tcp" {
+        return adapter.tcpConnect(address)
+    }
+
+    return errors.New("Invalid protocol")
 }
 
 func (adapter *ModbusAdapter) rtuConnect(address string) error {
