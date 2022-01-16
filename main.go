@@ -19,7 +19,18 @@ func main() {
         log.Fatalf("Failed to read config file: %v", err)
     }
 
-    repository.New()
+    adapter := repository.New()
+
+    mqttProtocol := viper.GetString("modbus.protocol")
+    mqttAddress := viper.GetString("modbus.address")
+    if err := adapter.Modbus().Connect(mqttProtocol, mqttAddress); err != nil {
+            log.Fatalf("Failed to connect to %s: %v", mqttAddress, err)
+    }
+    defer func() {
+        if err := adapter.Modbus().Close(); err != nil {
+            log.Fatalf("Failed to close %s: %v", mqttAddress, err)
+        }
+    }()
 
     address := viper.GetString("server.address")
     server := &http.Server{
@@ -35,7 +46,7 @@ func main() {
         }
         errs <-nil
     }()
-    log.Printf("Started Modbus service on :502\n")
+    log.Printf("Started Modbus service on %s\n", address)
 
     go func() {
         stop := make(chan os.Signal, 1)
